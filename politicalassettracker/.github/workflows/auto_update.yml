@@ -1,0 +1,31 @@
+name: Auto-Update LokAwaz Data
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Runs every Monday at midnight UTC
+  workflow_dispatch: # Allows you to trigger it manually from GitHub anytime
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run update script
+        run: python update_data.py
+
+      - name: Commit and push changes if data changed
+        run: |
+          git config --global user.name "LokAwaz Bot"
+          git config --global user.email "bot@users.noreply.github.com"
+          git add data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update MP asset data [skip ci]" && git push)
