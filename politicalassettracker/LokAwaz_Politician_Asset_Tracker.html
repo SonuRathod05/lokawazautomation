@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LokAwaz Politician Asset Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --sand:#c3b091;--sand-d:#a8966e;--sand-l:#e8d9c0;--sand-xl:#f5ede0;
+  --ink:#1a1208;--ink-m:#3d2e14;--muted:#7a6848;
+  --paper:#faf6ef;--paper2:#f0e8d8;--paper3:#e8dcc8;
+  --saffron:#E8651A;--gold:#c9862a;--gold-l:#e8a84a;
+  --maroon:#8B1A1A;--maroon-l:#c44040;
+  --teal:#1a5c6e;--teal-l:#2a8a9a;
+  --green:#1a5c1a;--green-l:#2d8a2d;
+  --slate:#4a3820;--purple:#5a1a7a;
+}
+body{font-family:'Bricolage Grotesque',sans-serif;background:var(--sand);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+.deco{height:6px;background:linear-gradient(90deg,#FF9933 0%,#FF9933 33%,#fff 33%,#fff 66%,#138808 66%);}
+.deco2{height:4px;background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 20px,var(--maroon) 20px,var(--maroon) 40px,var(--saffron) 40px,var(--saffron) 60px,var(--gold) 60px);}
+
+/* HEADER */
+.hdr{background:var(--ink);padding:0 22px;display:flex;align-items:center;justify-content:space-between;min-height:68px;border-bottom:3px solid var(--gold);position:sticky;top:0;z-index:100;}
+.logo-bl{display:flex;align-items:center;gap:14px;}
+.logo-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:2px solid var(--gold);border-radius:8px;font-size:22px;background:rgba(201,134,42,0.15);}
+.logo-nm{font-size:20px;font-weight:800;color:var(--sand-l);line-height:1.1;letter-spacing:-0.5px;}
+.logo-nm span{color:var(--saffron);}
+.logo-st{font-size:9px;font-weight:500;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:1px;}
+.lang-tgl{display:flex;background:rgba(255,255,255,0.08);border-radius:40px;padding:3px;gap:2px;}
+.lb{padding:6px 18px;border:none;border-radius:40px;font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);transition:all 0.2s;}
+.lb.active{background:var(--gold);color:var(--ink);}
+
+/* HERO */
+.hero{background:var(--ink);padding:18px 22px 22px;border-bottom:1px solid #2a1e0a;position:relative;overflow:hidden;}
+.hero::before{content:'₹';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:180px;font-weight:800;color:rgba(201,134,42,0.06);pointer-events:none;}
+.hero-eye{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:5px;}
+.hero-h{font-size:24px;font-weight:800;color:var(--sand-l);line-height:1.25;margin-bottom:7px;}
+.hero-h span{color:var(--gold-l);}
+.hero-p{font-size:13px;color:rgba(255,255,255,0.45);max-width:660px;line-height:1.6;}
+
+/* MEGA STATS */
+.mega{display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper2);border-bottom:2px solid var(--sand);}
+.mbox{padding:12px 14px;border-right:1px solid var(--sand);text-align:center;}
+.mbox:last-child{border-right:none;}
+.mnum{font-size:20px;font-weight:800;line-height:1;}
+.mlbl{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+/* KEY INSIGHT STRIP */
+.insight-strip{background:rgba(139,26,26,0.08);border-bottom:1px solid rgba(139,26,26,0.15);padding:10px 22px;display:flex;gap:20px;overflow-x:auto;scrollbar-width:none;}
+.insight-strip::-webkit-scrollbar{display:none;}
+.ins-item{display:flex;align-items:center;gap:8px;white-space:nowrap;flex-shrink:0;}
+.ins-dot{width:8px;height:8px;border-radius:50%;background:var(--maroon);flex-shrink:0;}
+.ins-txt{font-size:12px;font-weight:600;color:var(--ink-m);}
+.ins-val{font-size:12px;font-weight:800;color:var(--maroon);}
+
+/* HOUSE TABS */
+.house-tabs{background:var(--paper);border-bottom:2px solid var(--sand);display:flex;}
+.htab{flex:1;padding:13px 16px;border:none;border-bottom:3px solid transparent;background:transparent;font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.15s;text-align:center;}
+.htab:hover{background:var(--paper2);color:var(--ink);}
+.htab.active{color:var(--gold);border-bottom-color:var(--gold);background:var(--paper2);}
+
+/* FILTERS */
+.ctrl{background:var(--paper2);padding:10px 22px;border-bottom:1.5px solid var(--sand);display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.clbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+.fbtn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--sand-d);background:transparent;font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;color:var(--ink-m);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.fbtn:hover,.fbtn.active{background:var(--ink);color:var(--sand-xl);border-color:var(--ink);}
+.dvdr{width:1px;height:20px;background:var(--sand);margin:0 3px;}
+
+/* SEARCH */
+.srch-bar{background:var(--paper);padding:9px 22px;border-bottom:1px solid var(--sand);display:flex;gap:8px;}
+.srch-inp{flex:1;padding:7px 14px;border-radius:20px;border:1.5px solid var(--sand-d);background:var(--paper2);font-family:'Bricolage Grotesque',sans-serif;font-size:13px;color:var(--ink);outline:none;}
+.srch-inp:focus{border-color:var(--gold);}
+.srch-inp::placeholder{color:var(--muted);}
+
+/* PARTY OVERVIEW */
+.party-overview{padding:12px 22px;background:var(--paper);border-bottom:2px solid var(--sand);}
+.po-head{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.po-grid{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.po-grid::-webkit-scrollbar{display:none;}
+.po-card{background:var(--paper2);border-radius:8px;padding:9px 13px;border:1.5px solid rgba(195,176,145,0.4);flex-shrink:0;min-width:130px;cursor:pointer;transition:all 0.15s;}
+.po-card:hover,.po-card.active{border-color:var(--gold);}
+.po-name{font-size:12px;font-weight:800;margin-bottom:4px;}
+.po-stat{display:flex;justify-content:space-between;margin-top:3px;}
+.po-key{font-size:10px;color:var(--muted);}
+.po-val{font-size:11px;font-weight:800;}
+.po-bar{height:4px;background:var(--paper3);border-radius:2px;margin-top:5px;overflow:hidden;}
+.po-fill{height:100%;border-radius:2px;}
+
+/* MAIN LIST */
+.main{padding:14px 22px 52px;}
+.list-title{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.list-sub{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.list-count{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px;}
+
+/* MP CARD */
+.mpcard{background:var(--paper);border-radius:12px;padding:15px 17px;margin-bottom:9px;border:1.5px solid rgba(195,176,145,0.4);cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden;}
+.mpcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:12px 0 0 12px;background:var(--party-col,var(--sand));}
+.mpcard:hover{transform:translateX(2px);border-color:var(--sand-d);}
+.mpcard.exp{background:var(--paper2);border-color:var(--gold);}
+
+/* RANK */
+.rank-num{position:absolute;right:15px;top:15px;font-size:22px;font-weight:800;color:rgba(195,176,145,0.5);line-height:1;}
+.rank-1{color:rgba(201,134,42,0.6);}
+.rank-2{color:rgba(139,26,26,0.4);}
+.rank-3{color:rgba(232,101,26,0.4);}
+
+/* CARD TOP */
+.mpc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding-right:44px;}
+.avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;border:2px solid;}
+.mp-info .mpname{font-size:15px;font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:3px;}
+.mp-info .mpmeta{font-size:12px;color:var(--muted);}
+.mp-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+.badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;}
+.badge-house{background:rgba(26,92,110,0.12);color:var(--teal);border:1px solid rgba(26,92,110,0.25);}
+.badge-party{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.badge-min{background:rgba(45,138,45,0.12);color:var(--green);border:1px solid rgba(45,138,45,0.25);}
+
+/* ASSET ROW */
+.asset-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;}
+.asset-main{display:flex;flex-direction:column;}
+.asset-num{font-size:26px;font-weight:800;color:var(--gold);line-height:1;}
+.asset-lbl{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.asset-boxes{display:flex;gap:7px;flex-wrap:wrap;}
+.abox{background:var(--paper2);border-radius:7px;padding:7px 10px;border:1px solid rgba(195,176,145,0.3);}
+.abox-lbl{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.abox-val{font-size:13px;font-weight:800;}
+
+/* WEALTH BAR */
+.wealth-bar-wrap{margin-bottom:8px;}
+.wb-head{display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px;}
+.wb-track{height:8px;background:var(--paper3);border-radius:4px;overflow:hidden;}
+.wb-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 0.5s ease;}
+
+/* GROWTH TAG */
+.growth-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.growth-up{background:rgba(45,138,45,0.12);color:var(--green);border:1px solid rgba(45,138,45,0.25);}
+.growth-down{background:rgba(139,26,26,0.12);color:var(--maroon);border:1px solid rgba(139,26,26,0.25);}
+
+/* EXPANDED DETAIL */
+.mpdetail{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--sand);}
+.mpcard.exp .mpdetail{display:block;}
+.det-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:12px;}
+.dbox{background:var(--paper);border-radius:7px;padding:9px 11px;border:1px solid var(--sand);}
+.dbox-lbl{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.dbox-val{font-size:14px;font-weight:800;color:var(--ink);}
+.dbox-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* ASSET BREAKDOWN */
+.asset-breakdown{margin-bottom:12px;}
+.ab-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.ab-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.ab-lbl{font-size:12px;color:var(--ink-m);font-weight:600;width:140px;flex-shrink:0;}
+.ab-track{flex:1;height:7px;background:var(--paper3);border-radius:3px;overflow:hidden;}
+.ab-fill{height:100%;border-radius:3px;}
+.ab-val{font-size:11px;font-weight:800;color:var(--ink);min-width:70px;text-align:right;}
+
+/* HOLDINGS */
+.holdings{margin-bottom:10px;}
+.hd-title{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.hd-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.hd-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(201,134,42,0.1);color:var(--slate);border:1px solid rgba(201,134,42,0.25);}
+
+.src-note{font-size:11px;color:var(--muted);padding:7px 11px;background:var(--paper2);border-radius:6px;border-left:3px solid var(--gold);line-height:1.5;}
+
+/* FOOTER */
+.disc{font-size:11px;color:var(--muted);padding:10px 14px;background:var(--paper2);border-radius:6px;margin:0 22px 16px;line-height:1.5;border-left:3px solid var(--gold);}
+.soul{background:var(--ink);padding:13px 22px;text-align:center;border-top:3px solid var(--gold);}
+.soul-t{font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:2px;}
+.soul-t span{color:var(--gold-l);font-weight:700;}
+
+@media(max-width:600px){
+  .mega{grid-template-columns:repeat(2,1fr);}
+  .mbox{padding:10px 10px;}
+  .asset-num{font-size:20px;}
+  .mpc-top{padding-right:36px;}
+}
+</style>
+</head>
+<body>
+<div class="deco"></div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo-bl">
+    <div class="logo-icon">💰</div>
+    <div>
+      <div class="logo-nm"><span>Lok</span>Awaz</div>
+      <div class="logo-st" id="logo-st">Politician Asset Tracker</div>
+    </div>
+  </div>
+  <div class="lang-tgl">
+    <button class="lb active" id="ben" onclick="setLang('en')">EN</button>
+    <button class="lb" id="bhi" onclick="setLang('hi')">हिं</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eye" id="hero-eye">ECI SELF-DECLARED AFFIDAVITS · ADR ANALYSIS · VERIFIED DATA</div>
+  <div class="hero-h" id="hero-h">How Rich Are Your <span>MPs</span>? Every Rupee Disclosed.</div>
+  <div class="hero-p" id="hero-p">Net worth of sitting Lok Sabha and Rajya Sabha MPs — from self-declared Form-26 affidavits filed with the Election Commission. Analysed by Association for Democratic Reforms (ADR) and MyNeta.info.</div>
+</div>
+
+<!-- MEGA STATS -->
+<div class="mega">
+  <div class="mbox"><div class="mnum" style="color:var(--gold)" id="m1">₹5,705 Cr</div><div class="mlbl" id="ml1">Richest MP (Pemmasani)</div></div>
+  <div class="mbox"><div class="mnum" style="color:var(--maroon)" id="m2">93%</div><div class="mlbl" id="ml2">MPs are Crorepatis (LS 2024)</div></div>
+  <div class="mbox"><div class="mnum" style="color:var(--teal)" id="m3">₹20.5 Cr</div><div class="mlbl" id="ml3">Avg LS MP Net Worth</div></div>
+  <div class="mbox"><div class="mnum" style="color:var(--saffron)" id="m4">₹80.9 Cr</div><div class="mlbl" id="ml4">Avg RS MP Net Worth</div></div>
+</div>
+
+<!-- INSIGHT STRIP -->
+<div class="insight-strip">
+  <div class="ins-item"><div class="ins-dot"></div><span class="ins-txt">Top 3 Richest (LS 2024):</span><span class="ins-val">Pemmasani ₹5,705 Cr · Vishweshwar Reddy ₹4,568 Cr · Naveen Jindal ₹1,170 Cr</span></div>
+  <div class="ins-item"><div class="ins-dot" style="background:var(--teal)"></div><span class="ins-txt">Poorest LS MP:</span><span class="ins-val">₹1 lakh declared</span></div>
+  <div class="ins-item"><div class="ins-dot" style="background:var(--green)"></div><span class="ins-txt">RS Richest (BRS/TRS):</span><span class="ins-val">Bandi Partha Saradhi ₹5,300 Cr</span></div>
+  <div class="ins-item"><div class="ins-dot" style="background:var(--purple)"></div><span class="ins-txt">Jaya Bachchan (SP, RS):</span><span class="ins-val">₹1,001 Cr</span></div>
+</div>
+
+<!-- HOUSE TABS -->
+<div class="house-tabs">
+  <button class="htab active" id="ht-all" onclick="setHouse('all')">Both Houses</button>
+  <button class="htab" id="ht-ls" onclick="setHouse('ls')">Lok Sabha (543 MPs)</button>
+  <button class="htab" id="ht-rs" onclick="setHouse('rs')">Rajya Sabha (245 MPs)</button>
+</div>
+
+<!-- FILTERS -->
+<div class="ctrl">
+  <span class="clbl" id="flbl">Filter:</span>
+  <button class="fbtn active" id="f-all" onclick="setFilt('all')">All</button>
+  <button class="fbtn" id="f-100cr" onclick="setFilt('100cr')">₹100 Cr+</button>
+  <button class="fbtn" id="f-500cr" onclick="setFilt('500cr')">₹500 Cr+</button>
+  <button class="fbtn" id="f-min" onclick="setFilt('min')">Ministers</button>
+  <button class="fbtn" id="f-poor" onclick="setFilt('poor')">Least Wealthy</button>
+  <div class="dvdr"></div>
+  <span class="clbl" id="slbl">Sort:</span>
+  <button class="fbtn active" id="s-wealth" onclick="setSort('wealth')">Richest First</button>
+  <button class="fbtn" id="s-poor" onclick="setSort('poor')">Poorest First</button>
+  <button class="fbtn" id="s-alpha" onclick="setSort('alpha')">A–Z</button>
+  <button class="fbtn" id="s-growth" onclick="setSort('growth')">Growth %</button>
+</div>
+
+<!-- SEARCH -->
+<div class="srch-bar">
+  <input class="srch-inp" type="text" id="srch" placeholder="Search by name, party, constituency, state..." oninput="doSearch(this.value)">
+</div>
+
+<!-- PARTY OVERVIEW -->
+<div class="party-overview">
+  <div class="po-head" id="po-head">Party-wise Wealth Overview — Average Assets</div>
+  <div class="po-grid" id="po-grid"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="list-title" id="list-title">All MPs — Ranked by Declared Net Worth</div>
+  <div class="list-sub" id="list-sub">From ECI Form-26 affidavits; Lok Sabha 2024 & current Rajya Sabha</div>
+  <div class="list-count" id="list-count"></div>
+  <div id="mp-list"></div>
+</div>
+
+<div class="disc" id="disc"></div>
+<div class="soul">
+  <div class="soul-t" id="soul-t"><span>LokAwaz</span> — a Soul Product &nbsp;|&nbsp; जनप्रतिनिधि का धन, जनता की जानकारी</div>
+</div>
+<div class="deco2"></div>
+
+<script>
+// ALL DATA from ECI Form-26 Affidavits as analysed by ADR/MyNeta
+// Sources: ADR Reports, Business Standard, Deccan Herald verified data
+
+const tx={
+  en:{
+    logoSt:'Politician Asset Tracker',
+    eye:'ECI SELF-DECLARED AFFIDAVITS · ADR ANALYSIS · VERIFIED DATA',
+    h:'How Rich Are Your <span>MPs</span>? Every Rupee Disclosed.',
+    p:'Net worth of sitting Lok Sabha and Rajya Sabha MPs — from self-declared Form-26 affidavits filed with the Election Commission. Analysed by Association for Democratic Reforms (ADR) and MyNeta.info.',
+    m1:'₹5,705 Cr',ml1:'Richest MP (Pemmasani, LS)',
+    m2:'93%',ml2:'MPs are Crorepatis (LS 2024)',
+    m3:'₹20.5 Cr',ml3:'Avg LS MP Net Worth',
+    m4:'₹80.9 Cr',ml4:'Avg RS MP Net Worth',
+    htAll:'Both Houses',htLs:'Lok Sabha (543 MPs)',htRs:'Rajya Sabha (245 MPs)',
+    flbl:'Filter:',slbl:'Sort:',
+    f:{all:'All',['100cr']:'₹100 Cr+',['500cr']:'₹500 Cr+',min:'Ministers',poor:'Least Wealthy'},
+    s:{wealth:'Richest First',poor:'Poorest First',alpha:'A–Z',growth:'Growth %'},
+    poHead:'Party-wise Wealth Overview — Average Assets',
+    avgAssets:'Avg Assets',billionaires:'₹100Cr+ MPs',
+    listTitle:'All MPs — Ranked by Declared Net Worth',listSub:'From ECI Form-26 affidavits; Lok Sabha 2024 & current Rajya Sabha',
+    countTxt:(n)=>`Showing ${n} politicians`,
+    totalAssets:'Total Assets',movable:'Movable',immovable:'Immovable',liabilities:'Liabilities',netWorth:'Net Worth',
+    growthLbl:'vs prev election',minister:'Cabinet Minister',
+    holdings:'Key Holdings & Investments',breakdown:'Asset Breakdown',edu:'Education',
+    disc:'⚠ All asset data sourced from Form-26 affidavits self-declared by MPs to the Election Commission of India. Analysed by Association for Democratic Reforms (ADR) and MyNeta.info. Data reflects declared values — undisclosed assets cannot be tracked. This tracker is for public awareness. Source: adrindia.org / myneta.info',
+    soul:'a Soul Product  |  जनप्रतिनिधि का धन, जनता की जानकारी',
+  },
+  hi:{
+    logoSt:'नेता संपत्ति ट्रैकर',
+    eye:'ECI स्व-घोषित शपथपत्र · ADR विश्लेषण · सत्यापित डेटा',
+    h:'आपके <span>सांसद</span> कितने अमीर हैं? हर रुपये का खुलासा।',
+    p:'लोकसभा और राज्यसभा के बैठे सांसदों की कुल संपत्ति — चुनाव आयोग को दिए गए Form-26 शपथपत्रों से। ADR और MyNeta.info द्वारा विश्लेषित।',
+    m1:'₹5,705 Cr',ml1:'सबसे अमीर MP (पेम्मसानी, LS)',
+    m2:'93%',ml2:'करोड़पति MP (LS 2024)',
+    m3:'₹20.5 Cr',ml3:'औसत LS MP संपत्ति',
+    m4:'₹80.9 Cr',ml4:'औसत RS MP संपत्ति',
+    htAll:'दोनों सदन',htLs:'लोकसभा (543 MP)',htRs:'राज्यसभा (245 MP)',
+    flbl:'फ़िल्टर:',slbl:'क्रम:',
+    f:{all:'सभी',['100cr']:'₹100 Cr+',['500cr']:'₹500 Cr+',min:'मंत्री',poor:'सबसे कम'},
+    s:{wealth:'सबसे अमीर पहले',poor:'सबसे कम पहले',alpha:'A–Z',growth:'वृद्धि %'},
+    poHead:'दलवार संपत्ति — औसत संपत्ति',
+    avgAssets:'औसत संपत्ति',billionaires:'₹100Cr+ MP',
+    listTitle:'सभी सांसद — घोषित संपत्ति के आधार पर',listSub:'ECI Form-26 शपथपत्र से; लोकसभा 2024 और वर्तमान राज्यसभा',
+    countTxt:(n)=>`${n} नेता दिखाए जा रहे हैं`,
+    totalAssets:'कुल संपत्ति',movable:'चल संपत्ति',immovable:'अचल संपत्ति',liabilities:'देनदारियां',netWorth:'निवल संपत्ति',
+    growthLbl:'पिछले चुनाव से',minister:'कैबिनेट मंत्री',
+    holdings:'प्रमुख निवेश और संपत्ति',breakdown:'संपत्ति विवरण',edu:'शिक्षा',
+    disc:'⚠ सभी संपत्ति डेटा MP द्वारा चुनाव आयोग को Form-26 शपथपत्र में स्व-घोषित है। ADR और MyNeta.info द्वारा विश्लेषित। केवल घोषित संपत्ति — अघोषित संपत्ति ट्रैक नहीं हो सकती। स्रोत: adrindia.org / myneta.info',
+    soul:'एक Soul Product  |  जनप्रतिनिधि का धन, जनता की जानकारी',
+  }
+  
+};
+
+function fmtCr(v){
+  if(v>=1000) return '₹'+(v/1000).toFixed(1)+'K Cr';
+  if(v>=1) return '₹'+v.toFixed(v<10?1:0)+' Cr';
+  if(v>=0.01) return '₹'+(v*100).toFixed(0)+' lakh';
+  return '₹'+(v*10000).toFixed(0);
+}
+
+function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+
+function getFiltered(){
+  let rows=[...mps];
+  if(house!=='all') rows=rows.filter(m=>m.house===house);
+  if(partyFilt) rows=rows.filter(m=>m.party===partyFilt);
+  if(filt==='100cr') rows=rows.filter(m=>m.totalAssets>=100);
+  else if(filt==='500cr') rows=rows.filter(m=>m.totalAssets>=500);
+  else if(filt==='min') rows=rows.filter(m=>m.isMinister);
+  else if(filt==='poor') rows=rows.filter(m=>m.totalAssets<5);
+  if(query){
+    const q=query.toLowerCase();
+    rows=rows.filter(m=>m.name.toLowerCase().includes(q)||m.nameHi.includes(q)||m.party.toLowerCase().includes(q)||(m.const||'').toLowerCase().includes(q)||(m.state||'').toLowerCase().includes(q));
+  }
+  if(srt==='wealth') rows.sort((a,b)=>b.totalAssets-a.totalAssets);
+  else if(srt==='poor') rows.sort((a,b)=>a.totalAssets-b.totalAssets);
+  else if(srt==='alpha') rows.sort((a,b)=>(lang==='hi'?a.nameHi:a.name).localeCompare(lang==='hi'?b.nameHi:b.name));
+  else if(srt==='growth') rows.sort((a,b)=>b.growthPct-a.growthPct);
+  return rows;
+}
+
+function renderPartyOverview(){
+  const s=tx[lang];
+  const maxAvg=Math.max(...partyData.map(p=>p.avgCr));
+  document.getElementById('po-head').textContent=s.poHead;
+  document.getElementById('po-grid').innerHTML=partyData.map(p=>`
+    <div class="po-card ${partyFilt===p.name?'active':''}" onclick="setPartyF('${p.name}')">
+      <div class="po-name" style="color:${p.c2}">${p.name}</div>
+      <div class="po-stat"><span class="po-key">${s.avgAssets}</span><span class="po-val" style="color:var(--gold)">${p.avgCr>=100?'₹'+p.avgCr+' Cr':'₹'+p.avgCr+' Cr'}</span></div>
+      <div class="po-stat"><span class="po-key">${s.billionaires}</span><span class="po-val" style="color:var(--maroon)">${p.billionaires}</span></div>
+      <div class="po-bar"><div class="po-fill" style="width:${Math.round(p.avgCr/maxAvg*100)}%;background:${p.color}"></div></div>
+    </div>`).join('');
+}
+
+function render(){
+  const s=tx[lang];
+  const rows=getFiltered();
+  document.getElementById('disc').textContent=s.disc;
+  document.getElementById('soul-t').innerHTML=`<span>LokAwaz</span> — ${s.soul}`;
+  document.getElementById('list-title').textContent=s.listTitle;
+  document.getElementById('list-sub').textContent=s.listSub;
+  document.getElementById('list-count').textContent=s.countTxt(rows.length);
+  renderPartyOverview();
+
+  const maxA=Math.max(...rows.map(m=>m.totalAssets));
+
+  document.getElementById('mp-list').innerHTML=rows.map((m,i)=>{
+    const isExp=expanded===m.id;
+    const rbClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+    const wPct=Math.round((m.totalAssets/maxA)*100)||2;
+
+    return `<div class="mpcard ${isExp?'exp':''}" style="--party-col:${m.partyColor}" onclick="toggleMP('${m.id}')">
+      <div class="rank-num ${rbClass}">${i+1}</div>
+
+      <div class="mpc-top">
+        <div class="avatar" style="background:${m.partyColor}18;color:${m.partyColor};border-color:${m.partyColor}44">${initials(m.name)}</div>
+        <div class="mp-info">
+          <div class="mpname">${lang==='hi'?m.nameHi:m.name}</div>
+          <div class="mpmeta">${m.const}</div>
+          <div class="mp-badges">
+            <span class="badge-party" style="background:${m.partyColor}18;color:${m.partyColor};border:1px solid ${m.partyColor}33">${m.party}</span>
+            <span class="badge badge-house">${m.house==='ls'?'Lok Sabha':'Rajya Sabha'}</span>
+            ${m.isMinister?`<span class="badge badge-min">🏛 Minister</span>`:''}
+          </div>
+        </div>
+      </div>
+
+      <div class="asset-row">
+        <div class="asset-main">
+          <div class="asset-num">${fmtCr(m.totalAssets)}</div>
+          <div class="asset-lbl">${s.totalAssets}</div>
+          ${m.growthPct>0&&m.prevAssets>0?`<span class="growth-tag growth-up" style="margin-top:5px">▲ ${m.growthPct}% ${s.growthLbl}</span>`:''}
+        </div>
+        <div class="asset-boxes">
+          <div class="abox"><div class="abox-lbl">${s.movable}</div><div class="abox-val" style="color:var(--teal)">${fmtCr(m.movable)}</div></div>
+          <div class="abox"><div class="abox-lbl">${s.immovable}</div><div class="abox-val" style="color:var(--maroon)">${fmtCr(m.immovable)}</div></div>
+          <div class="abox"><div class="abox-lbl">${s.liabilities}</div><div class="abox-val" style="color:var(--saffron)">${fmtCr(m.liabilities)}</div></div>
+        </div>
+      </div>
+
+      <div class="wealth-bar-wrap">
+        <div class="wb-head"><span>${s.totalAssets} share</span><span style="color:var(--gold)">${wPct}% of max</span></div>
+        <div class="wb-track"><div class="wb-fill" style="width:${wPct}%;background:${m.partyColor}"></div></div>
+      </div>
+
+      <div class="mpdetail">
+        <div class="det-grid">
+          <div class="dbox"><div class="dbox-lbl">${s.netWorth}</div><div class="dbox-val" style="color:var(--green-l)">${fmtCr(m.netWorth)}</div><div class="dbox-sub">Assets minus liabilities</div></div>
+          <div class="dbox"><div class="dbox-lbl">${s.movable}</div><div class="dbox-val" style="color:var(--teal)">${fmtCr(m.movable)}</div></div>
+          <div class="dbox"><div class="dbox-lbl">${s.immovable}</div><div class="dbox-val" style="color:var(--maroon)">${fmtCr(m.immovable)}</div></div>
+          <div class="dbox"><div class="dbox-lbl">${s.liabilities}</div><div class="dbox-val" style="color:var(--saffron)">${fmtCr(m.liabilities)}</div></div>
+          <div class="dbox"><div class="dbox-lbl">${s.edu}</div><div class="dbox-val" style="font-size:11px;color:var(--muted)">${m.education}</div></div>
+          ${m.ministerOf?`<div class="dbox"><div class="dbox-lbl">Role</div><div class="dbox-val" style="font-size:11px;color:var(--green)">${m.ministerOf}</div></div>`:''}
+        </div>
+
+        <div class="asset-breakdown">
+          <div class="ab-title">${s.breakdown}</div>
+          ${m.assetBreakdown.map(ab=>`<div class="ab-row">
+            <span class="ab-lbl">${ab.lbl}</span>
+            <div class="ab-track"><div class="ab-fill" style="width:${ab.pct}%;background:${ab.color}"></div></div>
+            <span class="ab-val">${ab.val} (${ab.pct}%)</span>
+          </div>`).join('')}
+        </div>
+
+        <div class="holdings">
+          <div class="hd-title">${s.holdings}</div>
+          <div class="hd-tags">${m.keyHoldings.map(h=>`<span class="hd-tag">${h}</span>`).join('')}</div>
+        </div>
+
+        <div class="src-note">📄 Source: ${m.source}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMP(id){expanded=expanded===id?null:id;render();}
+function setHouse(h){house=h;['all','ls','rs'].forEach(k=>document.getElementById('ht-'+k)?.classList.remove('active'));document.getElementById('ht-'+h)?.classList.add('active');render();}
+function setFilt(f){filt=f;document.querySelectorAll('[id^="f-"]').forEach(b=>b.classList.remove('active'));document.getElementById('f-'+f)?.classList.add('active');render();}
+function setSort(s){srt=s;document.querySelectorAll('[id^="s-"]').forEach(b=>b.classList.remove('active'));document.getElementById('s-'+s)?.classList.add('active');render();}
+function doSearch(v){query=v;render();}
+function setPartyF(p){partyFilt=partyFilt===p?null:p;renderPartyOverview();render();}
+
+function setLang(l){
+  lang=l;
+  document.getElementById('ben').classList.toggle('active',l==='en');
+  document.getElementById('bhi').classList.toggle('active',l==='hi');
+  const s=tx[l];
+  document.getElementById('logo-st').textContent=s.logoSt;
+  document.getElementById('hero-eye').textContent=s.eye;
+  document.getElementById('hero-h').innerHTML=s.h;
+  document.getElementById('hero-p').textContent=s.p;
+  document.getElementById('m1').textContent=s.m1;document.getElementById('ml1').textContent=s.ml1;
+  document.getElementById('m2').textContent=s.m2;document.getElementById('ml2').textContent=s.ml2;
+  document.getElementById('m3').textContent=s.m3;document.getElementById('ml3').textContent=s.ml3;
+  document.getElementById('m4').textContent=s.m4;document.getElementById('ml4').textContent=s.ml4;
+  document.getElementById('ht-all').textContent=s.htAll;
+  document.getElementById('ht-ls').textContent=s.htLs;
+  document.getElementById('ht-rs').textContent=s.htRs;
+  document.getElementById('flbl').textContent=s.flbl;
+  document.getElementById('slbl').textContent=s.slbl;
+  document.getElementById('srch').placeholder=l==='hi'?'नाम, पार्टी, क्षेत्र, राज्य से खोजें...':'Search by name, party, constituency, state...';
+  Object.keys(s.f).forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.textContent=s.f[k];});
+  Object.keys(s.s).forEach(k=>{const el=document.getElementById('s-'+k);if(el)el.textContent=s.s[k];});
+  render();
+}
+
+setLang('en');
+// Keep your translation text (tx) and helper functions here...
+
+let partyData = [];
+let mps = [];
+
+// 1. Automatically fetch the data from your json file when the page loads
+fetch('data.json')
+  .then(response => response.json())
+  .then(data => {
+      partyData = data.partyData;
+      mps = data.mps;
+      
+      // 2. Initialize the app once data arrives
+      setLang('en');
+  })
+  .catch(err => console.error("Error loading data.json:", err));
+</script>
+</body>
+</html>
